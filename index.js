@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // API routes
-app.use('/api', require('./routes'));
+// app.use('/api', require('./routes'));
 
 // Database synchronization
 sequelize.sync({ force: false }).then(() => {
