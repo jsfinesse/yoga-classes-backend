@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // API routes
-app.use("/api/enroll", userRoutes);
+app.use("/api", userRoutes);
 
 // Database synchronization
 sequelize.sync({ force: false }).then(() => {

@@ -1,4 +1,5 @@
 const { User, Transaction, Slot } = require("../models");
+const { Sequelize } = require("sequelize");
 const { validationResult } = require("express-validator");
 
 const UserController = {
@@ -14,11 +15,23 @@ const UserController = {
 
             // Check if the user already enrolled in the current month
             const currentMonth = new Date().toISOString().slice(0, 7); // Format: 'YYYY-MM'
+            // Assuming currentMonth is a string like "YYYY-MM"
+            const currentMonthInteger = parseInt(
+                currentMonth.split("-")[1],
+                10
+            );
+
             const existingUserInCurrentMonth = await Transaction.findOne({
-                where: {
-                    userID: email,
-                    enrollmentMonth: currentMonth,
-                },
+                where: Sequelize.where(
+                    Sequelize.fn(
+                        "EXTRACT",
+                        Sequelize.literal(
+                            'MONTH FROM "Transaction"."dateoftransaction"'
+                        )
+                    ),
+                    currentMonthInteger
+                ),
+                userID: email,
             });
 
             if (existingUserInCurrentMonth) {
@@ -27,16 +40,37 @@ const UserController = {
                 });
             }
 
-            // Create a new user
-            const newUser = await User.create({ name, email, age });
+            // Create a new user only if the user doesn't exist else update the user's transaction with new slot
+            let existingUser = await User.findOne({ where: { email } });
+            let newUser;
+            if (existingUser) {
+                // Update the user's transaction with new slot
+                await Transaction.update(
+                    { slotID: selectedSlot },
+                    { where: { userID: email } }
+                );
+            } else {
+                // Create a new user
+                newUser = await User.create({ name, email, age });
+            }
+
+            const slotIdMap = {
+                "6-7AM": 1,
+                "7-8AM": 2,
+                "8-9AM": 3,
+                "5-6PM": 4,
+            };
+
+            const selectedSlotId = slotIdMap[selectedSlot];
 
             // Fetch the selected slot information
-            const selectedSlotInfo = await Slot.findByPk(selectedSlot);
-            if (!selectedSlotInfo) {
-                return res
-                    .status(404)
-                    .json({ error: "Selected slot not found." });
-            }
+            const selectedSlotInfo = {
+                id: selectedSlotId,
+                batch: selectedSlot,
+                price: 500,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            };
 
             // Create a transaction for the user
             const newTransaction = await Transaction.create({
