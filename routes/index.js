@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const { submitForm } = require("../controllers");
+const { enroll } = require("../controllers");
 
-router.post("/enroll", submitForm);
+router.post("/enroll", enroll);
 
 module.exports = router;
