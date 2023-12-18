@@ -1,5 +1,7 @@
 const Sequelize = require("sequelize");
 const UserModel = require("./User");
+const TransactionModel = require("./Transaction");
+const SlotModel = require("./Slot");
 
 const urlComponents = new URL(process.env.DATABASE_URL);
 
@@ -20,5 +22,10 @@ const sequelize = new Sequelize({
 });
 
 const User = UserModel(sequelize, Sequelize);
+const Transaction = TransactionModel(sequelize, Sequelize);
+const Slot = SlotModel(sequelize, Sequelize);
 
-module.exports = { sequelize, User };
+User.hasMany(Transaction, { foreignKey: "userID" });
+Transaction.belongsTo(User, { foreignKey: "userID" });
+
+module.exports = { sequelize, User, Transaction, Slot };

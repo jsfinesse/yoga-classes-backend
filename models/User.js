@@ -4,13 +4,21 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            primaryKey: true,
+            validate: {
+                isEmail: true,
+            },
+        },
         age: {
             type: DataTypes.INTEGER,
             allowNull: false,
-        },
-        selectedBatch: {
-            type: DataTypes.STRING,
-            allowNull: false,
+            validate: {
+                min: 18,
+                max: 65,
+            },
         },
     });
 
