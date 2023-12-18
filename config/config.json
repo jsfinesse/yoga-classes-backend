@@ -1,0 +1,4 @@
+{
+  "$schema": "https://sequelize.org/master/manual/migrations-json-schema.json",
+  "configFile": "./config/config.js"
+}
