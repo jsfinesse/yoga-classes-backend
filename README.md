@@ -2,7 +2,7 @@
 
 This repository contains the backend code for the Yoga Classes Admission Form application.
 
-To get to the frontend repo, [click here]()
+To get to the frontend repo, [click here](https://github.com/jsfinesse/yoga-classes-client)
 
 ## Overview
 
