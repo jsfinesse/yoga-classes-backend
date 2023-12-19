@@ -15,6 +15,10 @@ The Yoga Classes Admission Form backend is built using Express.js, Sequelize ORM
 - Sequelize ORM for database interaction.
 - Dockerized deployment for easy scalability.
 
+## ER Diagram
+
+![image info](./er_diagram.png)
+
 ## Getting Started
 
 Follow these steps to run the backend locally:
