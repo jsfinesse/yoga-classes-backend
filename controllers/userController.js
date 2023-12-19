@@ -22,23 +22,26 @@ const UserController = {
             );
 
             const existingUserInCurrentMonth = await Transaction.findOne({
-                where: Sequelize.where(
-                    Sequelize.fn(
-                        "EXTRACT",
-                        Sequelize.literal(
-                            'MONTH FROM "Transaction"."dateoftransaction"'
-                        )
+                where: {
+                  userID: email,
+                  [Sequelize.Op.and]: [
+                    Sequelize.where(
+                      Sequelize.fn(
+                        'EXTRACT',
+                        Sequelize.literal('MONTH FROM "Transaction"."dateoftransaction"')
+                      ),
+                      currentMonthInteger
                     ),
-                    currentMonthInteger
-                ),
-                userID: email,
-            });
-
-            if (existingUserInCurrentMonth) {
+                  ],
+                },
+              });
+              
+              if (existingUserInCurrentMonth) {
                 return res.status(400).json({
-                    error: "User already enrolled in this month. Switch next month.",
+                  error: "User already enrolled in this month. Switch next month.",
                 });
-            }
+              }
+              
 
             // Create a new user only if the user doesn't exist else update the user's transaction with new slot
             let existingUser = await User.findOne({ where: { email } });
